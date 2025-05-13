@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import axios from "axios";
 import { showErrorToast } from "@/lib";
-import { sampleUser } from "@/rough";
+// import { sampleUser } from "@/rough";
 
 // User interface and role type
 export interface IUser {
@@ -44,7 +44,8 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: sampleUser,
+      // user: sampleUser,
+      user: null,
       isAuthenticated: true,
       error: null,
 
@@ -101,7 +102,8 @@ export const useAuthStore = create<AuthState>()(
           //   withCredentials: true,
           // });
           // const user = response.data.user;
-          const user = sampleUser;
+          // const user = sampleUser;
+          const user = null;
           set({
             user,
             isAuthenticated: true,
