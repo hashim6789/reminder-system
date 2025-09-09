@@ -13,8 +13,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/store/useAuthStore";
-import { Link, Navigate, Outlet } from "react-router-dom";
+// import { useAuthStore } from "@/store/useAuthStore";
+import {
+  Link,
+  // , Navigate
+  Outlet,
+} from "react-router-dom";
+
 import { ModeToggle } from "@/components/mode-toggle";
 import {
   Tooltip,
@@ -34,15 +39,17 @@ import { Button } from "@/components/ui/button";
 import { Bell, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib";
+import { sampleUser } from "@/rough";
 
 export default function Layout() {
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
+  const user = sampleUser;
   const [notifications, setNotifications] = useState([
     { id: 1, message: "New message received", read: false },
     { id: 2, message: "Your account was updated", read: false },
     { id: 3, message: "Welcome to the platform!", read: true },
   ]);
-  if (!user) return <Navigate to={"login"} />;
+  // if (!user) return <Navigate to={"login"} />;
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 

@@ -1,27 +1,28 @@
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
+  // AudioWaveform,
+  // BookOpen,
+  // Bot,
+  // Command,
   Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  // GalleryVerticalEnd,
+  // Map,
+  // PieChart,
+  // Settings2,
+  // SquareTerminal,
 } from "lucide-react";
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+// import { NavMain } from "@/components/nav-main";
+// import { NavProjects } from "@/components/nav-projects";
+// import { NavUser } from "@/components/nav-user";
+// import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+  // SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Role } from "@/types";
+import { NavManagement } from "./nav-management";
 
 const getSidebarData = (userRole: Role) => {
   const user = {
@@ -30,78 +31,80 @@ const getSidebarData = (userRole: Role) => {
     avatar: "/avatars/user.jpg",
   };
 
-  const teams = [
-    { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
-    { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
-    { name: "Evil Corp.", logo: Command, plan: "Free" },
+  // const teams = [
+  //   { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
+  //   { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
+  //   { name: "Evil Corp.", logo: Command, plan: "Free" },
+  // ];
+
+  // const commonNavMain = [
+  //   {
+  //     title: "Playground",
+  //     url: "/playground",
+  //     icon: SquareTerminal,
+  //     isActive: true,
+  //     items: [
+  //       { title: "History", url: "/playground/history" },
+  //       { title: "Starred", url: "/playground/starred" },
+  //     ],
+  //   },
+  //   {
+  //     title: "Documentation",
+  //     url: "/docs",
+  //     icon: BookOpen,
+  //     items: [
+  //       { title: "Introduction", url: "/docs/intro" },
+  //       { title: "Get Started", url: "/docs/start" },
+  //     ],
+  //   },
+  // ];
+
+  // const adminNavMain = [
+  //   {
+  //     title: "Models",
+  //     url: "/models",
+  //     icon: Bot,
+  //     items: [
+  //       { title: "Genesis", url: "/models/genesis" },
+  //       { title: "Explorer", url: "/models/explorer" },
+  //       { title: "Quantum", url: "/models/quantum" },
+  //     ],
+  //   },
+  //   {
+  //     title: "Settings",
+  //     url: "/settings",
+  //     icon: Settings2,
+  //     items: [
+  //       { title: "General", url: "/settings/general" },
+  //       { title: "Team", url: "/settings/team" },
+  //       { title: "Billing", url: "/settings/billing" },
+  //       { title: "Limits", url: "/settings/limits" },
+  //     ],
+  //   },
+  // ];
+
+  const managements = [
+    { name: "Tasks", url: "/user/tasks", icon: Frame },
+    // { name: "Sales & Marketing", url: "/projects/sales", icon: PieChart },
   ];
 
-  const commonNavMain = [
-    {
-      title: "Playground",
-      url: "/playground",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        { title: "History", url: "/playground/history" },
-        { title: "Starred", url: "/playground/starred" },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "/docs",
-      icon: BookOpen,
-      items: [
-        { title: "Introduction", url: "/docs/intro" },
-        { title: "Get Started", url: "/docs/start" },
-      ],
-    },
-  ];
-
-  const adminNavMain = [
-    {
-      title: "Models",
-      url: "/models",
-      icon: Bot,
-      items: [
-        { title: "Genesis", url: "/models/genesis" },
-        { title: "Explorer", url: "/models/explorer" },
-        { title: "Quantum", url: "/models/quantum" },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings2,
-      items: [
-        { title: "General", url: "/settings/general" },
-        { title: "Team", url: "/settings/team" },
-        { title: "Billing", url: "/settings/billing" },
-        { title: "Limits", url: "/settings/limits" },
-      ],
-    },
-  ];
-
-  const commonProjects = [
-    { name: "Design Engineering", url: "/projects/design", icon: Frame },
-    { name: "Sales & Marketing", url: "/projects/sales", icon: PieChart },
-  ];
-
-  const adminProjects = [
-    { name: "Admin Dashboard", url: "/admin/dashboard", icon: Map },
-  ];
+  // const adminProjects = [
+  //   { name: "Admin Dashboard", url: "/admin/dashboard", icon: Map },
+  // ];
 
   return {
     user,
-    teams,
-    navMain:
-      userRole === "admin"
-        ? [...commonNavMain, ...adminNavMain]
-        : commonNavMain,
-    projects:
-      userRole === "admin"
-        ? [...commonProjects, ...adminProjects]
-        : commonProjects,
+    // teams,
+    // navMain:
+    // userRole === "admin"
+    //   ? [...commonNavMain, ...adminNavMain]
+    //   :
+    // commonNavMain,
+    managements:
+      // userRole === "admin"
+      //   ? [...commonProjects, ...adminProjects]
+      //   :
+      managements,
   };
 };
 
@@ -118,10 +121,10 @@ export function AppSidebar({ userRole, ...props }: AppSidebarProps) {
       {...props}
     >
       <SidebarHeader className="p-4 border-b">
-        <TeamSwitcher teams={data.teams} />
+        {/* <TeamSwitcher teams={data.teams} /> */}
       </SidebarHeader>
       <SidebarContent>
-        <NavMain
+        {/* <NavMain
           items={data.navMain.map((item) => ({
             ...item,
             url: item.url,
@@ -130,17 +133,23 @@ export function AppSidebar({ userRole, ...props }: AppSidebarProps) {
               url: subItem.url,
             })),
           }))}
-        />
-        <NavProjects
+        /> */}
+        {/* <NavProjects
           projects={data.projects.map((project) => ({
             ...project,
             url: project.url,
           }))}
+        /> */}
+        <NavManagement
+          managements={data.managements.map((item) => ({
+            ...item,
+            url: item.url,
+          }))}
         />
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <NavUser user={data.user} />
-      </SidebarFooter>
+      </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );
