@@ -14,21 +14,6 @@ import { Activity, Clock, FileText } from "lucide-react";
 import { fetchAuditLogs } from "@/services";
 import { IAuditLog } from "@/types";
 
-const formatDate = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-
-  if (hours < 1) return "Just now";
-  if (hours < 24) return `${hours}h ago`;
-
-  return (
-    date.toLocaleDateString() +
-    " " +
-    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  );
-};
-
 const getActionIcon = (type: IAuditLog["type"]) => {
   switch (type) {
     case "create":
@@ -147,7 +132,7 @@ export default function AuditLogsPage() {
                 </p>
               </div>
             ) : (
-              <div className="overflow-hidden">
+              <div className="">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -157,7 +142,7 @@ export default function AuditLogsPage() {
                       <TableHead className="font-semibold text-gray-900 py-4">
                         Details
                       </TableHead>
-                      <TableHead className="font-semibold text-gray-900 py-4 text-right">
+                      <TableHead className="font-semibold text-gray-900 py-4 ">
                         Time
                       </TableHead>
                     </TableRow>
@@ -182,11 +167,17 @@ export default function AuditLogsPage() {
                             {log.message}
                           </p>
                         </TableCell>
-                        <TableCell className="py-4 text-right">
+                        <TableCell>
+                          {new Date(log.createdAt).toLocaleString("en-US", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                        </TableCell>
+                        {/* <TableCell className="py-4 text-right">
                           <div className="text-sm text-muted-foreground font-mono">
                             {formatDate(log.createdAt)}
                           </div>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>
