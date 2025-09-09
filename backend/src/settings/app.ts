@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { ENV } from '@/configs';
 import { apiRouter } from '@/routers';
-import { apiRateLimiter } from '@/middlewares';
+import { apiRateLimiter, corsMiddleware } from '@/middlewares';
 
 const app = express();
 
@@ -13,6 +13,7 @@ if (ENV.NODE_ENV === 'development') {
 }
 
 // Middleware
+app.use(corsMiddleware);
 app.use(apiRateLimiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
