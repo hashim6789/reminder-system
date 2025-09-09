@@ -13,7 +13,7 @@ const reminderRuleController: IReminderRuleController = new ReminderRuleControll
 );
 
 /**
- * Router for handling auth-related routes.
+ * Router for handling reminderRule-related routes.
  */
 const reminderRuleRouter = Router();
 

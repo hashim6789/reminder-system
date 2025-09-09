@@ -11,7 +11,7 @@ const taskService: ITaskService = new TaskService(taskRepository);
 const taskController: ITaskController = new TaskController(taskService);
 
 /**
- * Router for handling auth-related routes.
+ * Router for handling task-related routes.
  */
 const taskRouter = Router();
 
