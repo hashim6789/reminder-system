@@ -7,18 +7,25 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
+    "dev": "prisma generate --schema=src/models/schema.prisma && ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prisma:generate": "prisma generate --schema=src/models/schema.prisma",
+    "migration:create": "prisma migrate dev --create-only --schema=src/models/schema.prisma",
+    "migrate": "prisma migrate deploy"
   },
   "dependencies": {
+    "@prisma/client": "^6.15.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "mongoose": "^8.14.1"
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.14.1",
+    "node-cron": "^4.2.1",
+    "prisma": "^6.15.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",

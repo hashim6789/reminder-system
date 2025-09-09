@@ -1,6 +1,6 @@
 import http from 'http';
 import { ENV } from './configs';
-import { app } from './settings/app';
+import { app, startReminderCron } from './settings';
 
 /**
  * Port number for the server to listen on.
@@ -16,4 +16,7 @@ const server = http.createServer(app);
  * Start the server and listen on the specified port.
  */
 
-server.listen(PORT, () => console.log(`Server is running in http://${domain}:${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Server is running in http://${domain}:${PORT}`);
+  startReminderCron();
+});

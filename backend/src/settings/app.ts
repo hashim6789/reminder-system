@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Connect to MongoDB
-connectDB();
+// connectDB();
 
 // Mount API Routes
 app.use('/api', apiRouter);
