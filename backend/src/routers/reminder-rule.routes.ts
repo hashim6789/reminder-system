@@ -33,5 +33,9 @@ reminderRuleRouter.put(
   '/:id',
   asyncHandler(reminderRuleController.update.bind(reminderRuleController)),
 );
+reminderRuleRouter.delete(
+  '/:id',
+  asyncHandler(reminderRuleController.delete.bind(reminderRuleController)),
+);
 
 export { reminderRuleRouter };

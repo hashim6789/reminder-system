@@ -9,4 +9,5 @@ export interface IReminderRuleRepository {
     id: string,
     data: Partial<CreateReminderRuleDTO | Pick<IReminderRule, 'isActive'>>,
   ): Promise<IReminderPopulatedDTO | null>;
+  delete(id: string): Promise<void>;
 }

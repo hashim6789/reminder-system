@@ -6,4 +6,5 @@ export interface IReminderRuleService {
   getAll(): Promise<IReminderPopulatedDTO[]>;
   toggleActive(id: string, change: boolean): Promise<IReminderPopulatedDTO>;
   update(id: string, data: UpdateReminderRuleDTO): Promise<IReminderPopulatedDTO>;
+  delete(id: string): Promise<void>;
 }

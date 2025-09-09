@@ -47,6 +47,12 @@ export class ReminderRuleRepository implements IReminderRuleRepository {
     return this.toIReminderRule(updatedRule);
   }
 
+  async delete(id: string): Promise<void> {
+    await prisma.reminderRule.delete({
+      where: { id },
+    });
+  }
+
   private toIReminderRule(rule: IReminderRule & { task: ITask }): IReminderPopulatedDTO {
     return {
       id: rule.id,
