@@ -23,7 +23,7 @@ export function UserLayout({ children, user }: UserLayoutProps) {
       <div className="min-h-screen flex flex-col">
         <Navbar user={user} />
         <div className="flex-1 flex">
-          <AppSidebar role={user.role} />
+          <AppSidebar />
           <SidebarInset className="flex flex-col">
             <main className="flex-1">{children}</main>
             <Footer />
