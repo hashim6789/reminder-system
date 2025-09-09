@@ -1,3 +1,4 @@
+import { useReminderRules } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,94 +26,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IReminderRule, sampleReminderRules } from "@/types/reminder-rules";
-import { useState } from "react";
-import { z } from "zod";
-
-// Zod Schema for form validation
-const reminderRuleSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  minutesBefore: z.number().min(1, "Minutes must be a positive number"),
-  taskId: z.string().min(1, "Please select a task"),
-});
 
 export default function ReminderRulesManagementPage() {
-  const [reminderRules, setReminderRules] =
-    useState<IReminderRule[]>(sampleReminderRules);
+  const {
+    reminderRules,
+    formData,
+    open,
+    error,
+    selectedRule,
+    setOpen,
+    handleToggle,
+    handleDelete,
+    handleEditRule,
+    handleInputChange,
+    handleSubmit,
+  } = useReminderRules();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    minutesBefore: 0,
-    taskId: "",
-  });
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleToggle = (id: string, isActive: boolean) => {
-    setReminderRules((prevRules) =>
-      prevRules.map((rule) => (rule.id === id ? { ...rule, isActive } : rule))
-    );
-  };
-
-  const handleEdit = (id: string) => {
-    // Implement edit logic (e.g., open modal)
-    console.log(`Edit rule ${id}`);
-  };
-
-  const handleDelete = (id: string) => {
-    setReminderRules((prevRules) => prevRules.filter((rule) => rule.id !== id));
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "minutesBefore" ? parseInt(value) || 0 : value,
-    }));
-    setError(null); // Clear error on change
-  };
-
-  const handleCreateRule = () => {
-    const validation = reminderRuleSchema.safeParse({
-      title: formData.title,
-      minutesBefore: formData.minutesBefore,
-      taskId: formData.taskId,
-    });
-
-    if (!validation.success) {
-      setError(validation.error.errors[0].message);
-      return;
-    }
-
-    const selectedTask = sampleReminderRules.find(
-      (rule) => rule.task.id.toString() === formData.taskId
-    );
-    if (selectedTask) {
-      const newRule: Omit<IReminderRule, "id" | "task"> & { taskId: number } = {
-        title: formData.title,
-        taskId: selectedTask.task.id,
-        isActive: true,
-        minutesBefore: formData.minutesBefore,
-        createdAt: new Date(),
-      };
-      console.log(newRule);
-
-      //   const sample = {
-      //     id: "rule-1",
-      //     title: "30 Minutes Before",
-      //     task: sampleTasks[0],
-      //     isActive: true,
-      //     minutesBefore: 30,
-      //     createdAt: new Date("2025-09-08T09:00:00Z"),
-      //   };
-      //   setReminderRules((prevRules) => [...prevRules, sample]);
-      setFormData({ title: "", minutesBefore: 0, taskId: "" });
-      setOpen(false);
-      setError(null);
-    }
-  };
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
       <div className="flex items-center justify-between">
@@ -121,13 +50,21 @@ export default function ReminderRulesManagementPage() {
         </h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>Create Reminder Rule</Button>
+            <Button onClick={() => setOpen(true)}>
+              {selectedRule ? "Edit Rule" : "Create Reminder Rule"}
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Reminder Rule</DialogTitle>
+              <DialogTitle>
+                {selectedRule
+                  ? "Edit Reminder Rule"
+                  : "Create New Reminder Rule"}
+              </DialogTitle>
               <DialogDescription>
-                Add a new rule to send reminders for tasks.
+                {selectedRule
+                  ? "Update the rule details below."
+                  : "Add a new rule to send reminders for tasks."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -148,14 +85,16 @@ export default function ReminderRulesManagementPage() {
                 name="taskId"
                 value={formData.taskId}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, taskId: value }))
+                  handleInputChange({
+                    target: { name: "taskId", value },
+                  } as React.ChangeEvent<HTMLInputElement>)
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a task" />
+                  <SelectValue placeholder="Select a task from existing rules" />
                 </SelectTrigger>
                 <SelectContent>
-                  {sampleReminderRules.map((rule) => (
+                  {reminderRules.map((rule) => (
                     <SelectItem
                       key={rule.task.id}
                       value={rule.task.id.toString()}
@@ -168,20 +107,17 @@ export default function ReminderRulesManagementPage() {
               {error && <p className="text-red-500 text-sm">{error}</p>}
             </div>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="button" onClick={handleCreateRule}>
-                Create
+              <Button onClick={handleSubmit}>
+                {selectedRule ? "Update" : "Create"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="w-full overflow-x-auto">
         <Table>
           <TableHeader>
@@ -202,7 +138,7 @@ export default function ReminderRulesManagementPage() {
                 <TableCell>
                   <Switch
                     checked={rule.isActive}
-                    onCheckedChange={(checked: boolean) =>
+                    onCheckedChange={(checked) =>
                       handleToggle(rule.id, checked)
                     }
                     aria-label={`Toggle ${rule.task.title} reminder`}
@@ -210,7 +146,7 @@ export default function ReminderRulesManagementPage() {
                 </TableCell>
                 <TableCell className="font-medium">{rule.task.title}</TableCell>
                 <TableCell>
-                  {rule.createdAt.toLocaleString("en-US", {
+                  {new Date(rule.createdAt).toLocaleString("en-US", {
                     dateStyle: "medium",
                     timeStyle: "short",
                   })}
@@ -220,7 +156,7 @@ export default function ReminderRulesManagementPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleEdit(rule.id)}
+                      onClick={() => handleEditRule(rule)}
                     >
                       Edit
                     </Button>

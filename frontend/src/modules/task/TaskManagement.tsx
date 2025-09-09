@@ -6,9 +6,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { sampleTasks } from "@/types";
+import { fetchAllTasks } from "@/services";
+import { ITask } from "@/types";
+import { useEffect, useState } from "react";
 
 export default function TaskManagementPage() {
+  const [tasks, setTasks] = useState<ITask[]>([]);
+
+  useEffect(() => {
+    const getTasks = async () => {
+      try {
+        const data = await fetchAllTasks();
+        setTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    getTasks();
+  }, []);
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
       <div className="flex items-center justify-between">
@@ -25,7 +41,7 @@ export default function TaskManagementPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sampleTasks.map((task) => (
+            {tasks.map((task) => (
               <TableRow key={task.id}>
                 <TableCell className="font-medium">{task.title}</TableCell>
                 <TableCell>{task.description || "N/A"}</TableCell>
