@@ -88,7 +88,7 @@ const getSidebarData = (userRole: Role) => {
   const managements = [
     { name: "Tasks", url: "/user/tasks", icon: Frame },
     { name: "Reminder Rules", url: "/user/rules", icon: PieChart },
-    { name: "Audit Logs", url: "/user/audit-logs", icon: History },
+    // { name: "Audit Logs", url: "/user/audit-logs", icon: History },
   ];
 
   // const adminProjects = [
