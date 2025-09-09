@@ -43,4 +43,8 @@ export class ReminderRuleService implements IReminderRuleService {
 
     return updatedRule;
   }
+
+  async delete(id: string): Promise<void> {
+    return this._repository.delete(id);
+  }
 }

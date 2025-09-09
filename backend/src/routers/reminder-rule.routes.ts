@@ -13,7 +13,7 @@ const reminderRuleController: IReminderRuleController = new ReminderRuleControll
 );
 
 /**
- * Router for handling auth-related routes.
+ * Router for handling reminderRule-related routes.
  */
 const reminderRuleRouter = Router();
 
@@ -32,6 +32,10 @@ reminderRuleRouter.patch(
 reminderRuleRouter.put(
   '/:id',
   asyncHandler(reminderRuleController.update.bind(reminderRuleController)),
+);
+reminderRuleRouter.delete(
+  '/:id',
+  asyncHandler(reminderRuleController.delete.bind(reminderRuleController)),
 );
 
 export { reminderRuleRouter };

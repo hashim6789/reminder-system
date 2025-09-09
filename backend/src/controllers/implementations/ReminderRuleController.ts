@@ -76,4 +76,19 @@ export class ReminderRuleController implements IReminderRuleController {
 
     res.status(200).json(updatedRule);
   }
+
+  async delete(req: Request, res: Response): Promise<void> {
+    const paramsValidation = idSchema.safeParse(req.params);
+
+    if (!paramsValidation.success) {
+      const errorMessage = paramsValidation.error.errors[0]?.message || 'Invalid input';
+
+      res.status(400).json({ error: errorMessage });
+      return;
+    }
+
+    const updatedRule = await this._service.delete(paramsValidation.data.id);
+
+    res.status(200).json(updatedRule);
+  }
 }

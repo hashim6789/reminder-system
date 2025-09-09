@@ -11,7 +11,7 @@ const auditLogService: IAuditLogService = new AuditLogService(auditLogRepository
 const auditLogController: IAuditLogController = new AuditLogController(auditLogService);
 
 /**
- * Router for handling auth-related routes.
+ * Router for handling auditLog-related routes.
  */
 const auditLogRouter = Router();
 
