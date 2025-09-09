@@ -1,4 +1,4 @@
-import { Frame, PieChart } from "lucide-react";
+import { Frame, History, PieChart } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,7 +18,7 @@ const getSidebarData = () => {
   const managements = [
     { name: "Tasks", url: "/tasks", icon: Frame },
     { name: "Reminder Rules", url: "/rules", icon: PieChart },
-    // { name: "Audit Logs", url: "/user/audit-logs", icon: History },
+    { name: "Audit Logs", url: "/audit-logs", icon: History },
   ];
 
   return {

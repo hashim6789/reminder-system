@@ -15,3 +15,25 @@ export const showInfoToast = (message = "Here is some info.") => {
 export const showWarningToast = (message = "Be careful!") => {
   toast.warning(message);
 };
+
+export const confirmAction = (
+  message: string,
+  onConfirm: () => void,
+  onCancel?: () => void
+) => {
+  toast(message, {
+    action: {
+      label: "Confirm",
+      onClick: () => {
+        onConfirm();
+      },
+    },
+    cancel: {
+      label: "Cancel",
+      onClick: () => {
+        if (onCancel) onCancel();
+      },
+    },
+    duration: 8000,
+  });
+};

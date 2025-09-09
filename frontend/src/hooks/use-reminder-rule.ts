@@ -8,6 +8,7 @@ import {
   toggleReminderRuleStatus,
 } from "@/services";
 import { IReminderRule } from "@/types/reminder-rules";
+import { showErrorToast, showSuccessToast, showWarningToast } from "@/lib";
 
 interface FormData {
   title: string;
@@ -83,7 +84,9 @@ export function useReminderRules() {
   const handleSubmit = async () => {
     const validation = createReminderRuleSchema.safeParse(formData);
     if (!validation.success) {
-      setError(validation.error.errors[0].message);
+      const message = validation.error.errors[0].message;
+      setError(message);
+      showWarningToast(message);
       return;
     }
 
@@ -93,9 +96,11 @@ export function useReminderRules() {
         setReminderRules((prev) =>
           prev.map((r) => (r.id === updated.id ? updated : r))
         );
+        showSuccessToast("Reminder updated successfully.");
       } else {
         const created = await createReminderRule(formData);
         setReminderRules((prev) => [...prev, created]);
+        showSuccessToast("Reminder created successfully.");
       }
 
       setFormData({ title: "", minutesBefore: 0, taskId: "" });
@@ -105,6 +110,7 @@ export function useReminderRules() {
     } catch (err) {
       setError("Failed to save reminder rule.");
       console.error(err);
+      showErrorToast("Failed to save reminder.");
     }
   };
 
