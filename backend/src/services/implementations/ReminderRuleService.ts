@@ -1,6 +1,6 @@
 import { IReminderRuleRepository } from '@/repositories';
 import { IReminderRuleService } from '../interfaces';
-import { CreateReminderRuleDTO } from '@/schemas';
+import { CreateReminderRuleDTO, UpdateReminderRuleDTO } from '@/schemas';
 import { IReminderPopulatedDTO } from '@/types';
 
 export class ReminderRuleService implements IReminderRuleService {
@@ -21,6 +21,21 @@ export class ReminderRuleService implements IReminderRuleService {
     }
 
     const updatedRule = await this._repository.update(id, { isActive: change });
+
+    if (!updatedRule) {
+      throw new Error('The rule toggle active is failed!');
+    }
+
+    return updatedRule;
+  }
+
+  async update(id: string, data: UpdateReminderRuleDTO): Promise<IReminderPopulatedDTO> {
+    const existingRule = await this._repository.findById(id);
+    if (!existingRule) {
+      throw new Error('The rule is not exist!');
+    }
+
+    const updatedRule = await this._repository.update(id, data);
 
     if (!updatedRule) {
       throw new Error('The rule toggle active is failed!');

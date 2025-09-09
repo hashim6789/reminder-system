@@ -1,7 +1,12 @@
 import { IReminderRuleService } from '@/services';
 import { IReminderRuleController } from '../interfaces';
 import { Request, Response } from 'express';
-import { createReminderRuleSchema, idSchema, toggleReminderRuleSchema } from '@/schemas';
+import {
+  createReminderRuleSchema,
+  idSchema,
+  toggleReminderRuleSchema,
+  updateReminderRuleSchema,
+} from '@/schemas';
 
 export class ReminderRuleController implements IReminderRuleController {
   constructor(private _service: IReminderRuleService) {}
@@ -46,6 +51,28 @@ export class ReminderRuleController implements IReminderRuleController {
       paramsValidation.data.id,
       bodyValidation.data.isActive,
     );
+
+    res.status(200).json(updatedRule);
+  }
+
+  async update(req: Request, res: Response): Promise<void> {
+    const bodyValidation = updateReminderRuleSchema.safeParse(req.body);
+    const paramsValidation = idSchema.safeParse(req.params);
+
+    if (!bodyValidation.success) {
+      const errorMessage = bodyValidation.error.errors[0]?.message || 'Invalid input';
+
+      res.status(400).json({ error: errorMessage });
+      return;
+    }
+    if (!paramsValidation.success) {
+      const errorMessage = paramsValidation.error.errors[0]?.message || 'Invalid input';
+
+      res.status(400).json({ error: errorMessage });
+      return;
+    }
+
+    const updatedRule = await this._service.update(paramsValidation.data.id, bodyValidation.data);
 
     res.status(200).json(updatedRule);
   }

@@ -29,5 +29,9 @@ reminderRuleRouter.patch(
   '/:id',
   asyncHandler(reminderRuleController.toggleActive.bind(reminderRuleController)),
 );
+reminderRuleRouter.put(
+  '/:id',
+  asyncHandler(reminderRuleController.update.bind(reminderRuleController)),
+);
 
 export { reminderRuleRouter };
