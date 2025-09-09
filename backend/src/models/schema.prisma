@@ -27,3 +27,20 @@ model ReminderRule {
 
   task          Task     @relation(fields: [taskId], references: [id])
 }
+
+model AuditLog {
+  id        String    @id @default(uuid())
+  message   String
+  type      AuditType
+  createdAt DateTime  @default(now())
+}
+
+enum AuditType {
+  reminder
+  delete
+  create
+  update
+  toggle
+}
+
+

@@ -7,6 +7,6 @@ export class TaskController implements ITaskController {
 
   async getAll(req: Request, res: Response): Promise<void> {
     const tasks = await this._service.getAll();
-    res.status(201).json(tasks);
+    res.status(200).json(tasks);
   }
 }
