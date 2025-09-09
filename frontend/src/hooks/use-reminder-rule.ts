@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createReminderRuleSchema } from "@/schema";
 import {
   createReminderRule,
@@ -25,12 +25,8 @@ export function useReminderRules() {
   });
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
     const getReminderRules = async () => {
       try {
         const data = await fetchAllReminderRules();

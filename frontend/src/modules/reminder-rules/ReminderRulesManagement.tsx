@@ -1,4 +1,4 @@
-import { useReminderRules } from "@/hooks";
+import { useReminderRules, useTasks } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,6 +41,8 @@ export default function ReminderRulesManagementPage() {
     handleInputChange,
     handleSubmit,
   } = useReminderRules();
+
+  const { tasks } = useTasks();
 
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -94,12 +96,9 @@ export default function ReminderRulesManagementPage() {
                   <SelectValue placeholder="Select a task from existing rules" />
                 </SelectTrigger>
                 <SelectContent>
-                  {reminderRules.map((rule) => (
-                    <SelectItem
-                      key={rule.task.id}
-                      value={rule.task.id.toString()}
-                    >
-                      {rule.task.title}
+                  {tasks.map((task) => (
+                    <SelectItem key={task.id} value={task.id.toString()}>
+                      {task.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
