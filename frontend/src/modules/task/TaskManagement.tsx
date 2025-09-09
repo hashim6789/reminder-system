@@ -30,13 +30,13 @@ export default function TaskManagementPage() {
                 <TableCell className="font-medium">{task.title}</TableCell>
                 <TableCell>{task.description || "N/A"}</TableCell>
                 <TableCell>
-                  {task.due_date.toLocaleString("en-US", {
+                  {task.dueDate.toLocaleString("en-US", {
                     dateStyle: "medium",
                     timeStyle: "short",
                   })}
                 </TableCell>
                 <TableCell>
-                  {task.created_at.toLocaleString("en-US", {
+                  {task.createdAt.toLocaleString("en-US", {
                     dateStyle: "medium",
                     timeStyle: "short",
                   })}

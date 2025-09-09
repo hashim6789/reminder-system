@@ -4,6 +4,7 @@ import {
   // Bot,
   // Command,
   Frame,
+  PieChart,
   // GalleryVerticalEnd,
   // Map,
   // PieChart,
@@ -85,7 +86,7 @@ const getSidebarData = (userRole: Role) => {
 
   const managements = [
     { name: "Tasks", url: "/user/tasks", icon: Frame },
-    // { name: "Sales & Marketing", url: "/projects/sales", icon: PieChart },
+    { name: "Reminder Rules", url: "/user/rules", icon: PieChart },
   ];
 
   // const adminProjects = [

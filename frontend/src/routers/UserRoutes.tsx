@@ -3,6 +3,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import DashboardPage from "@/modules/dashboard/Dashboard";
 import LandingPage from "@/modules/LandingPage";
 import TaskManagement from "@/modules/task/TaskManagement";
+import ReminderRulesManagementPage from "@/modules/reminder-rules/ReminderRulesManagement";
 
 export const UserRoutes = () => {
   return [
@@ -19,6 +20,7 @@ export const UserRoutes = () => {
               children: [
                 { path: "dashboard", element: <DashboardPage /> },
                 { path: "tasks", element: <TaskManagement /> },
+                { path: "rules", element: <ReminderRulesManagementPage /> },
               ],
             },
           ],
