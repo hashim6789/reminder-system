@@ -3,6 +3,7 @@ import { IReminderRuleService } from '../interfaces';
 import { CreateReminderRuleDTO, UpdateReminderRuleDTO } from '@/schemas';
 import { IReminderPopulatedDTO } from '@/types';
 import { AppError } from '@/middlewares';
+import { HttpStatus, ReminderMessages } from '@/constants';
 
 export class ReminderRuleService implements IReminderRuleService {
   constructor(
@@ -14,7 +15,7 @@ export class ReminderRuleService implements IReminderRuleService {
   async create(data: CreateReminderRuleDTO): Promise<IReminderPopulatedDTO> {
     const task = await this._taskRepository.findById(data.taskId);
     if (!task || !task.dueDate) {
-      throw new AppError('Invalid task or missing due date.', 404);
+      throw new AppError(ReminderMessages.TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const now = new Date();
@@ -22,11 +23,11 @@ export class ReminderRuleService implements IReminderRuleService {
     const reminderTime = new Date(dueTime.getTime() - data.minutesBefore * 60000);
 
     if (dueTime < now) {
-      throw new AppError('Cannot create reminder: task due time is in the past.', 400);
+      throw new AppError(ReminderMessages.TASK_DUE_PAST, HttpStatus.BAD_REQUEST);
     }
 
     if (reminderTime < now) {
-      throw new AppError('Cannot create reminder: reminder time is already in the past.', 400);
+      throw new AppError(ReminderMessages.REMINDER_TIME_PAST, HttpStatus.BAD_REQUEST);
     }
 
     const createdRule = await this._repository.create(data);
@@ -49,12 +50,12 @@ export class ReminderRuleService implements IReminderRuleService {
   async toggleActive(id: string, change: boolean): Promise<IReminderPopulatedDTO> {
     const existingRule = await this._repository.findById(id);
     if (!existingRule) {
-      throw new AppError('Reminder rule does not exist.', 404);
+      throw new AppError(ReminderMessages.RULE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const updatedRule = await this._repository.update(id, { isActive: change });
     if (!updatedRule) {
-      throw new AppError('Failed to toggle reminder rule status.', 500);
+      throw new AppError(ReminderMessages.TOGGLE_FAILED, HttpStatus.INTERNAL_ERROR);
     }
 
     const status = change ? 'activated' : 'deactivated';
@@ -73,12 +74,12 @@ export class ReminderRuleService implements IReminderRuleService {
   async update(id: string, data: UpdateReminderRuleDTO): Promise<IReminderPopulatedDTO> {
     const existingRule = await this._repository.findById(id);
     if (!existingRule) {
-      throw new AppError('Reminder rule does not exist.', 404);
+      throw new AppError(ReminderMessages.RULE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const task = await this._taskRepository.findById(data.taskId);
     if (!task || !task.dueDate) {
-      throw new AppError('Invalid task or missing due date.', 404);
+      throw new AppError(ReminderMessages.TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const now = new Date();
@@ -86,16 +87,16 @@ export class ReminderRuleService implements IReminderRuleService {
     const reminderTime = new Date(dueTime.getTime() - data.minutesBefore * 60000);
 
     if (dueTime < now) {
-      throw new AppError('Cannot update reminder: task due time is in the past.', 400);
+      throw new AppError(ReminderMessages.TASK_DUE_PAST, HttpStatus.BAD_REQUEST);
     }
 
     if (reminderTime < now) {
-      throw new AppError('Cannot update reminder: reminder time is already in the past.', 400);
+      throw new AppError(ReminderMessages.REMINDER_TIME_PAST, HttpStatus.BAD_REQUEST);
     }
 
     const updatedRule = await this._repository.update(id, data);
     if (!updatedRule) {
-      throw new AppError('Failed to update reminder rule.', 500);
+      throw new AppError(ReminderMessages.UPDATE_FAILED, HttpStatus.INTERNAL_ERROR);
     }
 
     const message = `Update: reminder rule "${updatedRule.title}" updated for task "${updatedRule.task.title}" (due at ${updatedRule.task.dueDate.toLocaleString()})`;
@@ -112,7 +113,7 @@ export class ReminderRuleService implements IReminderRuleService {
   async delete(id: string): Promise<void> {
     const existingRule = await this._repository.findById(id);
     if (!existingRule) {
-      throw new AppError('Reminder rule does not exist.', 404);
+      throw new AppError(ReminderMessages.RULE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     await this._repository.delete(id);
