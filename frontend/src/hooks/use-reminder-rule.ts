@@ -8,7 +8,14 @@ import {
   toggleReminderRuleStatus,
 } from "@/services";
 import { IReminderRule } from "@/types/reminder-rules";
-import { showErrorToast, showSuccessToast, showWarningToast } from "@/lib";
+import {
+  getAxiosErrorMessage,
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "@/lib";
+import { useTasks } from "./use-task";
+import { ReminderMessages } from "@/constants";
 
 interface FormData {
   title: string;
@@ -19,6 +26,8 @@ interface FormData {
 export function useReminderRules() {
   const [reminderRules, setReminderRules] = useState<IReminderRule[]>([]);
   const [selectedRule, setSelectedRule] = useState<IReminderRule | null>(null);
+  const { tasks } = useTasks();
+
   const [formData, setFormData] = useState<FormData>({
     title: "",
     minutesBefore: 0,
@@ -33,7 +42,9 @@ export function useReminderRules() {
         const data = await fetchAllReminderRules();
         setReminderRules(data);
       } catch (error) {
-        console.error("Failed to fetch reminder rules:", error);
+        const message = getAxiosErrorMessage(error);
+        console.error(ReminderMessages.FETCH_FAILED, message);
+        showErrorToast(message);
       }
     };
 
@@ -47,7 +58,9 @@ export function useReminderRules() {
         prev.map((rule) => (rule.id === id ? updated : rule))
       );
     } catch (error) {
-      console.error("Failed to toggle reminder rule:", error);
+      const message = getAxiosErrorMessage(error);
+      console.error(ReminderMessages.TOGGLE_FAILED, message);
+      showErrorToast(message);
     }
   };
 
@@ -56,10 +69,11 @@ export function useReminderRules() {
       await deleteReminderRule(id);
       setReminderRules((prev) => prev.filter((rule) => rule.id !== id));
     } catch (error) {
-      console.error("Failed to delete reminder rule:", error);
+      const message = getAxiosErrorMessage(error);
+      console.error(ReminderMessages.DELETE_FAILED, message);
+      showErrorToast(message);
     }
   };
-
   const handleEditRule = (rule: IReminderRule) => {
     setSelectedRule(rule);
     setFormData({
@@ -84,9 +98,38 @@ export function useReminderRules() {
   const handleSubmit = async () => {
     const validation = createReminderRuleSchema.safeParse(formData);
     if (!validation.success) {
-      const message = validation.error.errors[0].message;
+      const message =
+        validation.error.errors[0].message ||
+        ReminderMessages.VALIDATION_FAILED;
       setError(message);
       showWarningToast(message);
+      return;
+    }
+
+    const selectedTask = tasks.find(
+      (task) => task.id.toString() === formData.taskId
+    );
+    if (!selectedTask || !selectedTask.dueDate) {
+      setError(ReminderMessages.TASK_INVALID);
+      showWarningToast(ReminderMessages.TASK_INVALID);
+      return;
+    }
+
+    const now = new Date();
+    const dueTime = new Date(selectedTask.dueDate);
+    const reminderTime = new Date(
+      dueTime.getTime() - formData.minutesBefore * 60000
+    );
+
+    if (dueTime < now) {
+      setError(ReminderMessages.TASK_DUE_PAST);
+      showWarningToast(ReminderMessages.TASK_DUE_PAST);
+      return;
+    }
+
+    if (reminderTime < now) {
+      setError(ReminderMessages.REMINDER_TIME_PAST);
+      showWarningToast(ReminderMessages.REMINDER_TIME_PAST);
       return;
     }
 
@@ -96,11 +139,11 @@ export function useReminderRules() {
         setReminderRules((prev) =>
           prev.map((r) => (r.id === updated.id ? updated : r))
         );
-        showSuccessToast("Reminder updated successfully.");
+        showSuccessToast(ReminderMessages.UPDATE_SUCCESS);
       } else {
         const created = await createReminderRule(formData);
         setReminderRules((prev) => [...prev, created]);
-        showSuccessToast("Reminder created successfully.");
+        showSuccessToast(ReminderMessages.CREATE_SUCCESS);
       }
 
       setFormData({ title: "", minutesBefore: 0, taskId: "" });
@@ -108,14 +151,16 @@ export function useReminderRules() {
       setOpen(false);
       setError(null);
     } catch (err) {
-      setError("Failed to save reminder rule.");
-      console.error(err);
-      showErrorToast("Failed to save reminder.");
+      const message = getAxiosErrorMessage(err);
+      setError(message);
+      console.error(message);
+      showErrorToast(message);
     }
   };
 
   return {
     reminderRules,
+    tasks,
     formData,
     open,
     error,
