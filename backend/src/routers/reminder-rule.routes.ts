@@ -6,17 +6,21 @@ import {
   AuditLogRepository,
   IAuditLogRepository,
   IReminderRuleRepository,
+  ITaskRepository,
   ReminderRuleRepository,
+  TaskRepository,
 } from '@/repositories';
 import { IReminderRuleService, ReminderRuleService } from '@/services';
 import { prisma } from '@/configs';
 
 const reminderRuleRepository: IReminderRuleRepository = new ReminderRuleRepository(prisma);
 const auditLogRepository: IAuditLogRepository = new AuditLogRepository(prisma);
+const taskRepository: ITaskRepository = new TaskRepository(prisma);
 
 const reminderRuleService: IReminderRuleService = new ReminderRuleService(
   reminderRuleRepository,
   auditLogRepository,
+  taskRepository,
 );
 const reminderRuleController: IReminderRuleController = new ReminderRuleController(
   reminderRuleService,

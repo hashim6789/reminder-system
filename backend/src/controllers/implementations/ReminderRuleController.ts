@@ -56,7 +56,7 @@ export class ReminderRuleController implements IReminderRuleController {
   }
 
   async update(req: Request, res: Response): Promise<void> {
-    const bodyValidation = updateReminderRuleSchema.safeParse(req.body);
+    const bodyValidation = createReminderRuleSchema.safeParse(req.body);
     const paramsValidation = idSchema.safeParse(req.params);
 
     if (!bodyValidation.success) {

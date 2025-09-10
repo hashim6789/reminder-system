@@ -8,4 +8,14 @@ export class TaskRepository implements ITaskRepository {
   async findAll(): Promise<ITask[]> {
     return await this.prisma.task.findMany();
   }
+
+  async findById(id: string): Promise<ITask | null> {
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+    });
+
+    if (!task) return null;
+
+    return task;
+  }
 }

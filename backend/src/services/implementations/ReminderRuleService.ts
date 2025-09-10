@@ -1,4 +1,4 @@
-import { IAuditLogRepository, IReminderRuleRepository } from '@/repositories';
+import { IAuditLogRepository, IReminderRuleRepository, ITaskRepository } from '@/repositories';
 import { IReminderRuleService } from '../interfaces';
 import { CreateReminderRuleDTO, UpdateReminderRuleDTO } from '@/schemas';
 import { IReminderPopulatedDTO } from '@/types';
@@ -7,9 +7,27 @@ export class ReminderRuleService implements IReminderRuleService {
   constructor(
     private _repository: IReminderRuleRepository,
     private _auditLogRepository: IAuditLogRepository,
+    private _taskRepository: ITaskRepository,
   ) {}
 
   async create(data: CreateReminderRuleDTO): Promise<IReminderPopulatedDTO> {
+    const task = await this._taskRepository.findById(data.taskId);
+    if (!task || !task.dueDate) {
+      throw new Error('Invalid task or missing due date.');
+    }
+
+    const now = new Date();
+    const dueTime = new Date(task.dueDate);
+    const reminderTime = new Date(dueTime.getTime() - data.minutesBefore * 60000);
+
+    if (dueTime < now) {
+      throw new Error('Cannot create reminder: task due time is in the past.');
+    }
+
+    if (reminderTime < now) {
+      throw new Error('Cannot create reminder: reminder time is already in the past.');
+    }
+
     const createdRule = await this._repository.create(data);
 
     const message = `Create: reminder rule "${createdRule.title}" created for task "${createdRule.task.title}" (due at ${createdRule.task.dueDate.toLocaleString()})`;
@@ -57,13 +75,29 @@ export class ReminderRuleService implements IReminderRuleService {
       throw new Error('Reminder rule does not exist.');
     }
 
+    const task = await this._taskRepository.findById(data.taskId);
+    if (!task || !task.dueDate) {
+      throw new Error('Invalid task or missing due date.');
+    }
+
+    const now = new Date();
+    const dueTime = new Date(task.dueDate);
+    const reminderTime = new Date(dueTime.getTime() - data.minutesBefore * 60000);
+
+    if (dueTime < now) {
+      throw new Error('Cannot update reminder: task due time is in the past.');
+    }
+
+    if (reminderTime < now) {
+      throw new Error('Cannot update reminder: reminder time is already in the past.');
+    }
+
     const updatedRule = await this._repository.update(id, data);
     if (!updatedRule) {
       throw new Error('Failed to update reminder rule.');
     }
 
     const message = `Update: reminder rule "${updatedRule.title}" updated for task "${updatedRule.task.title}" (due at ${updatedRule.task.dueDate.toLocaleString()})`;
-
     console.log(`[Update] ${message}`);
 
     await this._auditLogRepository.create({
