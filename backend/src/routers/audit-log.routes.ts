@@ -4,8 +4,9 @@ import { AuditLogController } from '@/controllers/implementations';
 import { IAuditLogController } from '@/controllers/interfaces';
 import { IAuditLogRepository, AuditLogRepository } from '@/repositories';
 import { IAuditLogService, AuditLogService } from '@/services';
+import { prisma } from '@/configs';
 
-const auditLogRepository: IAuditLogRepository = new AuditLogRepository();
+const auditLogRepository: IAuditLogRepository = new AuditLogRepository(prisma);
 
 const auditLogService: IAuditLogService = new AuditLogService(auditLogRepository);
 const auditLogController: IAuditLogController = new AuditLogController(auditLogService);

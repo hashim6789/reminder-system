@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { ENV } from '@/configs';
 import { apiRouter } from '@/routers';
-import { apiRateLimiter, corsMiddleware } from '@/middlewares';
+import { apiRateLimiter, corsMiddleware, errorHandler } from '@/middlewares';
 
 const app = express();
 
@@ -21,5 +21,7 @@ app.use(cookieParser());
 
 // Mount API Routes
 app.use('/api', apiRouter);
+
+app.use(errorHandler);
 
 export { app };

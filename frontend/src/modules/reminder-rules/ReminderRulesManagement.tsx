@@ -1,4 +1,4 @@
-import { useReminderRules, useTasks } from "@/hooks";
+import { useReminderRules } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,6 +30,7 @@ import {
 export default function ReminderRulesManagementPage() {
   const {
     reminderRules,
+    tasks,
     formData,
     open,
     error,
@@ -41,8 +42,6 @@ export default function ReminderRulesManagementPage() {
     handleInputChange,
     handleSubmit,
   } = useReminderRules();
-
-  const { tasks } = useTasks();
 
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">

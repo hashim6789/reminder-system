@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchAllTasks } from "@/services"; // Your API call
+import { fetchAllTasks } from "@/services";
 import { ITask } from "@/types/task";
+import { getAxiosErrorMessage } from "@/lib";
+import { TaskMessages } from "@/constants";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<ITask[]>([]);
@@ -13,8 +15,9 @@ export function useTasks() {
         const data = await fetchAllTasks();
         setTasks(data);
       } catch (err) {
-        console.error("Failed to fetch tasks:", err);
-        setError("Unable to load tasks");
+        const message = getAxiosErrorMessage(err);
+        console.error(TaskMessages.FETCH_FAILED, message);
+        setError(message);
       } finally {
         setLoading(false);
       }
