@@ -9,9 +9,10 @@ import {
   ReminderRuleRepository,
 } from '@/repositories';
 import { IReminderRuleService, ReminderRuleService } from '@/services';
+import { prisma } from '@/configs';
 
-const reminderRuleRepository: IReminderRuleRepository = new ReminderRuleRepository();
-const auditLogRepository: IAuditLogRepository = new AuditLogRepository();
+const reminderRuleRepository: IReminderRuleRepository = new ReminderRuleRepository(prisma);
+const auditLogRepository: IAuditLogRepository = new AuditLogRepository(prisma);
 
 const reminderRuleService: IReminderRuleService = new ReminderRuleService(
   reminderRuleRepository,

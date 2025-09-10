@@ -4,8 +4,9 @@ import { TaskController } from '@/controllers/implementations';
 import { ITaskController } from '@/controllers/interfaces';
 import { ITaskRepository, TaskRepository } from '@/repositories';
 import { ITaskService, TaskService } from '@/services';
+import { prisma } from '@/configs';
 
-const taskRepository: ITaskRepository = new TaskRepository();
+const taskRepository: ITaskRepository = new TaskRepository(prisma);
 
 const taskService: ITaskService = new TaskService(taskRepository);
 const taskController: ITaskController = new TaskController(taskService);

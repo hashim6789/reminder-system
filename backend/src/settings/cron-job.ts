@@ -1,12 +1,10 @@
 import cron from 'node-cron';
-import { PrismaClient } from '@prisma/client';
 import { AuditLogRepository } from '@/repositories/implementations/AuditRepository';
 import { AuditLogService } from '@/services/implementations/AuditLogService';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/configs';
 
 export function startReminderCron() {
-  const auditRepository = new AuditLogRepository();
+  const auditRepository = new AuditLogRepository(prisma);
   const auditService = new AuditLogService(auditRepository);
 
   cron.schedule('* * * * *', async () => {

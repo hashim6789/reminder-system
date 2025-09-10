@@ -24,7 +24,7 @@ export class ReminderRuleService implements IReminderRuleService {
   }
 
   async getAll(): Promise<IReminderPopulatedDTO[]> {
-    return await this._repository.findAll(); // No audit log here as requested
+    return await this._repository.findAll();
   }
 
   async toggleActive(id: string, change: boolean): Promise<IReminderPopulatedDTO> {

@@ -3,11 +3,10 @@ import { IReminderPopulatedDTO, IReminderRule, ITask } from '@/types';
 import { IReminderRuleRepository } from '../interfaces';
 import { CreateReminderRuleDTO } from '@/schemas';
 
-const prisma = new PrismaClient();
-
 export class ReminderRuleRepository implements IReminderRuleRepository {
+  constructor(private prisma: PrismaClient) {}
   async create(data: CreateReminderRuleDTO): Promise<IReminderPopulatedDTO> {
-    const rule = await prisma.reminderRule.create({
+    const rule = await this.prisma.reminderRule.create({
       data: {
         taskId: data.taskId,
         minutesBefore: data.minutesBefore,
@@ -20,12 +19,15 @@ export class ReminderRuleRepository implements IReminderRuleRepository {
   }
 
   async findAll(): Promise<IReminderPopulatedDTO[]> {
-    const rules = await prisma.reminderRule.findMany({ include: { task: true } });
+    const rules = await this.prisma.reminderRule.findMany({ include: { task: true } });
     return rules.map(this.toIReminderRule);
   }
 
   async findById(id: string): Promise<IReminderPopulatedDTO | null> {
-    const rule = await prisma.reminderRule.findUnique({ where: { id }, include: { task: true } });
+    const rule = await this.prisma.reminderRule.findUnique({
+      where: { id },
+      include: { task: true },
+    });
 
     if (!rule) return null;
 
@@ -36,7 +38,7 @@ export class ReminderRuleRepository implements IReminderRuleRepository {
     id: string,
     data: Partial<CreateReminderRuleDTO | Pick<IReminderRule, 'isActive'>>,
   ): Promise<IReminderPopulatedDTO | null> {
-    const updatedRule = await prisma.reminderRule.update({
+    const updatedRule = await this.prisma.reminderRule.update({
       where: { id },
       data,
       include: { task: true },
@@ -48,7 +50,7 @@ export class ReminderRuleRepository implements IReminderRuleRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.reminderRule.delete({
+    await this.prisma.reminderRule.delete({
       where: { id },
     });
   }
